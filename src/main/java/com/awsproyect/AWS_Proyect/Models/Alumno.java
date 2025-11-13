@@ -1,5 +1,6 @@
 package com.awsproyect.AWS_Proyect.Models;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -23,5 +24,6 @@ public class Alumno {
     private String matricula;
     @NotNull(message = "el campo 'promedio' no debe ser nulo")
     @Min(value = 0, message = "El promedio no puede ser negativo")
+    @Max(value = 100,message = "El promedio no pude ser mayor a 100")
     private Double promedio;
 }
