@@ -22,5 +22,5 @@ public class Profesor {
     private String apellidos;
     @NotNull(message = "el campo 'horas' no debe ser nulo")
     @Min(value = 0, message = "no debe tener horas negativas")
-    private Double horasClase;
+    private int horasClase;
 }

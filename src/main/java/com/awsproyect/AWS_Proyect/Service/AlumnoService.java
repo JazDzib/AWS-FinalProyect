@@ -54,7 +54,5 @@ public class AlumnoService {
                 .filter(alumno -> alumno.getId().equals(id))
                 .findFirst();
     }
-
-
 }
 
