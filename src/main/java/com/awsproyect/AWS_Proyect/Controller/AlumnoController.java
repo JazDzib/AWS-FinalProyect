@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/alumnos")
-@RequiredArgsConstructor
+
 public class AlumnoController {
     @Autowired
     private AlumnoService alumnoService;
