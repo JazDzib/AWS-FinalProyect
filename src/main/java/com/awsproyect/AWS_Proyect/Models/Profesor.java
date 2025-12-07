@@ -1,5 +1,6 @@
 package com.awsproyect.AWS_Proyect.Models;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -10,18 +11,21 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 @Data
 @Getter
 @Setter
-@EntityScan
+@Builder
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "profesores")
 public class Profesor {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotEmpty (message = "el campo 'numero empleado' no debe estar vacio")
+    @Column(nullable = false, length = 50)
     private String numeroEmpleado;
-    @NotEmpty (message = "el campo 'nombres' no debe estar vacio")
+    @Column(nullable = false, length = 100)
     private String nombres;
-    @NotEmpty(message = "el campo 'apellidos' no debe estar vacio")
+    @Column(nullable = false, length = 100)
     private String apellidos;
-    @NotNull(message = "el campo 'horas' no debe ser nulo")
-    @Min(value = 0, message = "no debe tener horas negativas")
+    @Column(nullable = false)
     private int horasClase;
 }

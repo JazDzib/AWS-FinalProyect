@@ -1,7 +1,7 @@
 package com.awsproyect.AWS_Proyect.Controller;
 
 import com.awsproyect.AWS_Proyect.Models.Profesor;
-import com.awsproyect.AWS_Proyect.Service.ProfesorService;
+import com.awsproyect.AWS_Proyect.Service.Implementation.ProfesorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,29 +1,30 @@
 package com.awsproyect.AWS_Proyect.Models;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 import lombok.*;
-import lombok.NonNull;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+
 @Getter
 @Setter
 @Data
-@EntityScan
+@Builder
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "alumnos")
 public class Alumno {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotEmpty(message = "el campo  'nombre' no debe estar vacio")
+    @Column(nullable = false, length = 100)
     private String nombres;
-    @NotEmpty(message = "el campo 'apellido' no debe estar vacio")
+    @Column(nullable = false, length = 100)
     private String apellidos;
-    @NotEmpty(message = "el campo 'matricula' no debe estar vacio")
+    @Column(nullable = false, length = 50)
     private String matricula;
-    @NotNull(message = "el campo 'promedio' no debe ser nulo")
-    @Min(value = 0, message = "El promedio no puede ser negativo")
-    @Max(value = 100,message = "El promedio no pude ser mayor a 100")
+    @Column(nullable = false)
     private Double promedio;
+    @Column(nullable = false, length = 150)
+    private String fotoPerfilUrl;
+    @Column(nullable = false, length = 50)
+    private String password;
 }
