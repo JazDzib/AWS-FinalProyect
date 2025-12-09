@@ -26,6 +26,8 @@ public class AlumnoController {
     private final IS3Service iS3Service;
 
 
+
+
     @GetMapping
     public ResponseEntity<List<Alumno>> getAlumnos(){
         var response = iAlumnosService.getAlumnos();
@@ -71,6 +73,12 @@ public class AlumnoController {
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("{id}/email")
+    public ResponseEntity<String> sendEmail(@PathVariable Long id ) {
+        iAlumnosService.sendEmail(id);
+        return ResponseEntity.ok().build();
     }
 
 }

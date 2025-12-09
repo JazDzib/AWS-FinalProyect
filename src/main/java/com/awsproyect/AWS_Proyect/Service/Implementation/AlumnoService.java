@@ -24,6 +24,7 @@ public class AlumnoService implements IAlumnosService {
 
     private final AlumnosRepository alumnosRepository;
     private final S3Service s3Service;
+    private final SNService sNService;
 
     public ArrayList<Alumno> getAlumnos(){
        return new ArrayList<Alumno>(alumnosRepository.findAll());
@@ -94,6 +95,19 @@ public class AlumnoService implements IAlumnosService {
 
     public Optional<Alumno> getAlumnoById(Long id){
         return alumnosRepository.findById(id);
+    }
+
+    @Override
+    public void sendEmail(Long id){
+        var alumno = alumnosRepository.findById(id);
+        if(alumno.isEmpty()){
+            return;
+        }
+        var newAlumno = alumno.get();
+        String subject = "Informacion del alumno " + newAlumno.getNombres() + " " + newAlumno.getApellidos();
+        String body = "Promedio del alumno: " + newAlumno.getPromedio();
+        sNService.sendMessage(subject,body);
+
     }
 }
 
