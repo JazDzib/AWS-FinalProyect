@@ -1,6 +1,9 @@
 package com.awsproyect.AWS_Proyect.Controller;
 
 import com.awsproyect.AWS_Proyect.Models.Profesor;
+import com.awsproyect.AWS_Proyect.Models.Request.ProfesorDTO;
+import com.awsproyect.AWS_Proyect.Models.Request.UpdateProfesorResponseDTO;
+import com.awsproyect.AWS_Proyect.Service.IProfesorService;
 import com.awsproyect.AWS_Proyect.Service.Implementation.ProfesorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,36 +17,37 @@ import java.util.List;
 @RequestMapping("/profesores")
 @RequiredArgsConstructor
 public class ProfesorController {
-    @Autowired
-    private ProfesorService profesorService;
+
+    private final IProfesorService iProfesorService;
 
     @GetMapping
     public ResponseEntity<List<Profesor>> getAllProfesores(){
-        return ResponseEntity.ok(profesorService.getProfesoresList());
+        var response = iProfesorService.getProfesores();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Profesor> getProfesorById(@PathVariable Long id){
-       return profesorService.getProfesorById(id)
-                .map(profesor -> ResponseEntity.ok(profesor))
-                .orElse(ResponseEntity.notFound().build());
+       var response = iProfesorService.getProfesorById(id);
+       return response.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Profesor> postProfesor (@Valid @RequestBody Profesor profesor){
-        return ResponseEntity.status(201).body(profesorService.createProfesor(profesor));
+    public ResponseEntity<ProfesorDTO> postProfesor (@Valid @RequestBody ProfesorDTO profesor){
+        Long id = iProfesorService.createProfesor(profesor);
+        return ResponseEntity.status(201).body(profesor);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Profesor> putProfesor (@PathVariable Long id, @Valid @RequestBody Profesor profesor){
-        return profesorService.updateProfesor(id, profesor)
-                .map(nuevoProfesor-> ResponseEntity.ok(nuevoProfesor))
+    public ResponseEntity<Profesor> putProfesor (@PathVariable Long id, @Valid @RequestBody UpdateProfesorResponseDTO profesor){
+        return iProfesorService.updateProfesor(id,profesor)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProfesor (@PathVariable Long id){
-        boolean eliminado = profesorService.deleteProfesor(id);
+        boolean eliminado = iProfesorService.deleteProfesor(id);
         if(eliminado){
             return ResponseEntity.ok().build();
         }else {

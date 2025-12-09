@@ -52,6 +52,9 @@ public class AlumnoService implements IAlumnosService {
         if(alumnoRequest.getMatricula()!=null&& !alumnoRequest.getMatricula().isBlank()){
             actualizar.setMatricula(alumnoRequest.getMatricula());
         }
+        if(alumnoRequest.getPromedio()!=null ){
+            actualizar.setPromedio(alumnoRequest.getPromedio());
+        }
         if(alumnoRequest.getFotoPerfilUrl()!=null&& !alumnoRequest.getFotoPerfilUrl().isBlank()){
             actualizar.setFotoPerfilUrl(alumnoRequest.getFotoPerfilUrl());
         }
