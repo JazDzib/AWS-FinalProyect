@@ -4,13 +4,16 @@ import com.awsproyect.AWS_Proyect.Models.Alumno;
 import com.awsproyect.AWS_Proyect.Models.Request.AlumnoDTO;
 import com.awsproyect.AWS_Proyect.Models.Request.UpdateAlumnosRequestDTO;
 import com.awsproyect.AWS_Proyect.Service.IAlumnosService;
+import com.awsproyect.AWS_Proyect.Service.IS3Service;
 import com.awsproyect.AWS_Proyect.Service.Implementation.AlumnoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -19,6 +22,8 @@ import java.util.List;
 public class AlumnoController {
 
     private final IAlumnosService iAlumnosService;
+
+    private final IS3Service iS3Service;
 
 
     @GetMapping
@@ -53,6 +58,19 @@ public class AlumnoController {
         return iAlumnosService.updateAlumno(id, alumno)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("{id}/fotoPerfil")
+    public  ResponseEntity<String> uploandfotoPerfile(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
+        if(file.isEmpty()){
+            return ResponseEntity.badRequest().build();
+        }
+        try{
+            iAlumnosService.uploandfotoPerfile(id, file);
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 }

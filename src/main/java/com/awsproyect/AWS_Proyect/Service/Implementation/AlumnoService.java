@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.expression.spel.ast.NullLiteral;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,7 @@ import java.util.Optional;
 public class AlumnoService implements IAlumnosService {
 
     private final AlumnosRepository alumnosRepository;
+    private final S3Service s3Service;
 
     public ArrayList<Alumno> getAlumnos(){
        return new ArrayList<Alumno>(alumnosRepository.findAll());
@@ -74,6 +77,19 @@ public class AlumnoService implements IAlumnosService {
         }else {
             return false;
         }
+    }
+
+    @Override
+    public boolean uploandfotoPerfile(Long id, MultipartFile file) throws IOException {
+        var alumno = alumnosRepository.findById(id);
+        if(alumno.isEmpty()){
+            return false;
+        }
+        String filePath = s3Service.uploadFile(file);
+        var newAlumno = alumno.get();
+        newAlumno.setFotoPerfilUrl(filePath);
+        alumnosRepository.save(newAlumno);
+        return false;
     }
 
     public Optional<Alumno> getAlumnoById(Long id){
