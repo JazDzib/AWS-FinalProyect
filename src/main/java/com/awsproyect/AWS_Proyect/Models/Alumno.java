@@ -19,12 +19,12 @@ public class Alumno {
     private String nombres;
     @Column(nullable = false, length = 100)
     private String apellidos;
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, unique = true)
     private String matricula;
     @Column(nullable = false)
     private Double promedio;
-    @Column(nullable = false, length = 150)
+    @Column()
     private String fotoPerfilUrl;
-    @Column(nullable = false, length = 50)
+     @Column(nullable = false)
     private String password;
 }

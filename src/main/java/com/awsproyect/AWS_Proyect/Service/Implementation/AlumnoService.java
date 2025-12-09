@@ -98,16 +98,16 @@ public class AlumnoService implements IAlumnosService {
     }
 
     @Override
-    public void sendEmail(Long id){
+    public boolean sendEmail(Long id){
         var alumno = alumnosRepository.findById(id);
         if(alumno.isEmpty()){
-            return;
+            return false;
         }
         var newAlumno = alumno.get();
         String subject = "Informacion del alumno " + newAlumno.getNombres() + " " + newAlumno.getApellidos();
         String body = "Promedio del alumno: " + newAlumno.getPromedio();
         sNService.sendMessage(subject,body);
-
+        return true;
     }
 }
 

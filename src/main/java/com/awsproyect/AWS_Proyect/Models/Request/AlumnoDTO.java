@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
 
 public record AlumnoDTO(
     @NotEmpty(message = "el campo  'nombre' no debe estar vacio")
@@ -19,7 +20,8 @@ public record AlumnoDTO(
     Double promedio,
 
     String fotoPerfilUrl,
-    @NotEmpty(message = "el campo 'apellido' no debe estar vacio")
+    @NotEmpty(message = "el campo 'contraseña' no debe estar vacio")
+    @Length(min = 0, message = "la contraseña debe ser minimo de 8 caracteres")
     String password
 ) {
     public Alumno entity(){

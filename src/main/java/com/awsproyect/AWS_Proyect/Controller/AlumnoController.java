@@ -3,6 +3,7 @@ package com.awsproyect.AWS_Proyect.Controller;
 import com.awsproyect.AWS_Proyect.Models.Alumno;
 import com.awsproyect.AWS_Proyect.Models.Request.AlumnoDTO;
 import com.awsproyect.AWS_Proyect.Models.Request.UpdateAlumnosRequestDTO;
+import com.awsproyect.AWS_Proyect.Models.Response.AlumnoResponseDTO;
 import com.awsproyect.AWS_Proyect.Service.IAlumnosService;
 import com.awsproyect.AWS_Proyect.Service.IS3Service;
 import com.awsproyect.AWS_Proyect.Service.Implementation.AlumnoService;
@@ -37,13 +38,18 @@ public class AlumnoController {
     @GetMapping("/{id}")
     public ResponseEntity<Alumno> getAlumnosById(@PathVariable Long id){
         var response = iAlumnosService.getAlumnoById(id);
-        return response.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return response.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<AlumnoDTO> postAlumno (@Valid @RequestBody AlumnoDTO alumno){
+    public ResponseEntity<AlumnoResponseDTO> postAlumno (@Valid @RequestBody AlumnoDTO alumno){
        Long id = iAlumnosService.createAlumno(alumno);
-        return ResponseEntity.status(201).body(alumno);
+
+        if(id != null && id > 0){
+            var response = new AlumnoResponseDTO(id);
+            return ResponseEntity.status(201).body(response);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping("/{id}")
@@ -77,8 +83,13 @@ public class AlumnoController {
 
     @PostMapping("{id}/email")
     public ResponseEntity<String> sendEmail(@PathVariable Long id ) {
-        iAlumnosService.sendEmail(id);
-        return ResponseEntity.ok().build();
+        boolean enviado = iAlumnosService.sendEmail(id);
+        if(enviado){
+            return ResponseEntity.ok().build();
+        }else{
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 
 }
