@@ -10,6 +10,7 @@ import com.awsproyect.AWS_Proyect.Service.Implementation.AlumnoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,7 +50,7 @@ public class AlumnoController {
             var response = new AlumnoResponseDTO(id);
             return ResponseEntity.status(201).body(response);
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
@@ -85,9 +86,10 @@ public class AlumnoController {
     public ResponseEntity<String> sendEmail(@PathVariable Long id ) {
         boolean enviado = iAlumnosService.sendEmail(id);
         if(enviado){
-            return ResponseEntity.ok().build();
+            return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON)
+                    .body("{\"message \": \"Email enviado\"}");
         }else{
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
 
     }

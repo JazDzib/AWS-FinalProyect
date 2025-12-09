@@ -1,8 +1,11 @@
 package com.awsproyect.AWS_Proyect.Controller;
 
 import com.awsproyect.AWS_Proyect.Models.Profesor;
+import com.awsproyect.AWS_Proyect.Models.Request.AlumnoDTO;
 import com.awsproyect.AWS_Proyect.Models.Request.ProfesorDTO;
 import com.awsproyect.AWS_Proyect.Models.Request.UpdateProfesorResponseDTO;
+import com.awsproyect.AWS_Proyect.Models.Response.AlumnoResponseDTO;
+import com.awsproyect.AWS_Proyect.Models.Response.ProfesorResponseDTO;
 import com.awsproyect.AWS_Proyect.Service.IProfesorService;
 import com.awsproyect.AWS_Proyect.Service.Implementation.ProfesorService;
 import jakarta.validation.Valid;
@@ -33,10 +36,15 @@ public class ProfesorController {
     }
 
     @PostMapping
-    public ResponseEntity<ProfesorDTO> postProfesor (@Valid @RequestBody ProfesorDTO profesor){
+    public ResponseEntity<ProfesorResponseDTO> postProfesor (@Valid @RequestBody ProfesorDTO profesor){
         Long id = iProfesorService.createProfesor(profesor);
-        return ResponseEntity.status(201).body(profesor);
+        if(id != null && id > 0){
+            var response = new ProfesorResponseDTO(id);
+            return ResponseEntity.status(201).body(response);
+        }
+        return ResponseEntity.notFound().build();
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Profesor> putProfesor (@PathVariable Long id, @Valid @RequestBody UpdateProfesorResponseDTO profesor){

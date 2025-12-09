@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public record ProfesorDTO(
-    @NotEmpty(message = "el campo  'nombre' no debe estar vacio")
+    @NotEmpty(message = "el campo  'numero' no debe estar vacio")
     String numeroEmpleado,
     @NotEmpty(message = "el campo 'nombres' no debe estar vacio")
     String nombres,
