@@ -127,13 +127,35 @@ public class AlumnoController {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body("{\"message \": \"Session verificado\"}");
             }else{
-                return ResponseEntity.badRequest().build();
+                return ResponseEntity.status(400)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body("{\"error\": \"Sesión inválida o inactiva\"}");
 
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @PostMapping("{id}/session/logout")
+    public ResponseEntity<String> logout(@PathVariable Long id,@Valid @RequestBody LoginResponse request){
+        try {
+            boolean sessionActive= iSessionService.logoutSession(request.sessionString());
+            if (sessionActive){
+                return ResponseEntity.status(200)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body("{\"message \": \"Session verificado\"}");
+            }else  {
+                return ResponseEntity.status(400)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body("{\"error\": \"Sesión inválida o inactiva\"}");
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 
 }

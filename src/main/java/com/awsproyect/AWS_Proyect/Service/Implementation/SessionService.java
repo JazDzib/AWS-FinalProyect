@@ -26,7 +26,7 @@ public class SessionService implements ISessionService {
         }
 
         var alumno = alumnoSegun.get();
-        if(password.equals(alumno.getPassword())){
+        if(!password.equals(alumno.getPassword())){
             throw new RuntimeException("contraseña invalida");
         }
 
@@ -52,6 +52,19 @@ public class SessionService implements ISessionService {
             return true;
         }
         return  false;
+    }
+
+    public  boolean  logoutSession(String sessionString){
+        var sessionActive = sessionRepository.findSessionString(sessionString);
+        if(sessionActive.isEmpty()){
+
+            return false;
+        }
+        AlumnoSesion  session = sessionActive.get();
+        session.setActivo(false);
+        sessionRepository.save(session);
+        return true;
+
     }
 
     private String generateRandomString(int length) {

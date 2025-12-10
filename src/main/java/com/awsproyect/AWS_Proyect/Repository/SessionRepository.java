@@ -47,4 +47,7 @@ public class SessionRepository {
                 .flatMap(page -> page.items().stream())
                 .findFirst();
     }
+
+    // Opción recomendada: Buscar por ID de usuario y Token de sesión para ser exactos
+
 }
