@@ -1,11 +1,17 @@
 package com.awsproyect.AWS_Proyect.Controller;
 
+import com.awsproyect.AWS_Proyect.Exception.NotFoundException;
 import com.awsproyect.AWS_Proyect.Models.Alumno;
 import com.awsproyect.AWS_Proyect.Models.Request.AlumnoDTO;
+import com.awsproyect.AWS_Proyect.Models.Request.LoginRequest;
 import com.awsproyect.AWS_Proyect.Models.Request.UpdateAlumnosRequestDTO;
+import com.awsproyect.AWS_Proyect.Models.Request.VerifyRequestLoginDTO;
 import com.awsproyect.AWS_Proyect.Models.Response.AlumnoResponseDTO;
+import com.awsproyect.AWS_Proyect.Models.Response.LoginResponse;
+import com.awsproyect.AWS_Proyect.Models.Response.UploandPhotoDTO;
 import com.awsproyect.AWS_Proyect.Service.IAlumnosService;
 import com.awsproyect.AWS_Proyect.Service.IS3Service;
+import com.awsproyect.AWS_Proyect.Service.ISessionService;
 import com.awsproyect.AWS_Proyect.Service.Implementation.AlumnoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +32,7 @@ public class AlumnoController {
     private final IAlumnosService iAlumnosService;
 
     private final IS3Service iS3Service;
+    private final ISessionService iSessionService;
 
 
 
@@ -70,15 +77,18 @@ public class AlumnoController {
     }
 
     @PostMapping("{id}/fotoPerfil")
-    public  ResponseEntity<String> uploandfotoPerfile(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
+    public  ResponseEntity<UploandPhotoDTO> uploandfotoPerfile(@PathVariable Long id, @RequestParam("foto") MultipartFile file) throws IOException {
         if(file.isEmpty()){
             return ResponseEntity.badRequest().build();
         }
         try{
-            iAlumnosService.uploandfotoPerfile(id, file);
-            return ResponseEntity.ok().build();
+            String fotoPerfil = iAlumnosService.uploandfotoPerfile(id, file);
+            var response = new UploandPhotoDTO(fotoPerfil);
+            return ResponseEntity.ok(response);
+        }catch (NotFoundException e){
+            return ResponseEntity.notFound().build();
         }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -92,6 +102,38 @@ public class AlumnoController {
             return ResponseEntity.notFound().build();
         }
 
+    }
+
+    @PostMapping("{id}/session/login")
+    public ResponseEntity<LoginResponse> login(@PathVariable Long id, @Valid @RequestBody LoginRequest request){
+        try {
+            String sessionString = iSessionService.login(id, request.password());
+            var response = new LoginResponse(sessionString);
+            return ResponseEntity.ok(response);
+        }catch (NotFoundException e){
+            return ResponseEntity.notFound().build();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("{id}/session/verify")
+    public ResponseEntity<String> verifySession(@PathVariable Long id, @Valid @RequestBody VerifyRequestLoginDTO request){
+        try {
+            boolean sessionString = iSessionService.verifySession(request.sessionString());
+            if(sessionString){
+                return ResponseEntity.status(200)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body("{\"message \": \"Session verificado\"}");
+            }else{
+                return ResponseEntity.badRequest().build();
+
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }

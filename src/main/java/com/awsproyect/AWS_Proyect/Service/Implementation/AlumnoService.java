@@ -1,6 +1,7 @@
 package com.awsproyect.AWS_Proyect.Service.Implementation;
 
 import com.awsproyect.AWS_Proyect.Datos.MemoryData;
+import com.awsproyect.AWS_Proyect.Exception.NotFoundException;
 import com.awsproyect.AWS_Proyect.Models.Alumno;
 import com.awsproyect.AWS_Proyect.Models.Request.AlumnoDTO;
 import com.awsproyect.AWS_Proyect.Models.Request.UpdateAlumnosRequestDTO;
@@ -81,16 +82,16 @@ public class AlumnoService implements IAlumnosService {
     }
 
     @Override
-    public boolean uploandfotoPerfile(Long id, MultipartFile file) throws IOException {
+    public String uploandfotoPerfile(Long id, MultipartFile file) throws IOException {
         var alumno = alumnosRepository.findById(id);
         if(alumno.isEmpty()){
-            return false;
+            throw new NotFoundException("foto perfil no encontrado");
         }
         String filePath = s3Service.uploadFile(file);
         var newAlumno = alumno.get();
         newAlumno.setFotoPerfilUrl(filePath);
         alumnosRepository.save(newAlumno);
-        return false;
+        return filePath;
     }
 
     public Optional<Alumno> getAlumnoById(Long id){
